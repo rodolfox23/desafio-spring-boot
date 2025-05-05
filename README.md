@@ -1,72 +1,149 @@
-# Desafío Técnico: Gestión de Tareas con Spring Boot y Java
+# API de Gestión de Tareas - Previred
 
-La empresa NUEVO SPA desea desarrollar una plataforma de gestión de tareas para mejorar la productividad de sus equipos. El sistema debe permitir a los usuarios crear, actualizar, eliminar y listar tareas. Además, se requiere autenticación mediante JWT y documentación de la API utilizando OpenAPI y Swagger.
+API REST para la gestión de usuarios y tareas, desarrollada con Spring Boot.
 
-## Objetivo:
-Crear una API RESTful utilizando Spring Boot que gestione usuarios y tareas, aplicando buenas prácticas, principios SOLID y utilizando las tecnologías especificadas.
+## Características Principales
 
-## Requisitos Técnicos:
-### Java:
-- Utiliza Java 17 para la implementación.
-- Utiliza las características de Java 17, como lambdas y streams, cuando sea apropiado.
-- Utilizar Maven como gestor de dependencias
+### Autenticación y Usuarios
+- Registro de nuevos usuarios (Sign-up)
+- Inicio de sesión (Login) con JWT
+- Gestión de perfiles de usuario
+- Validación de email y contraseña
 
-### Spring Boot 3.4.x:
-- Construye la aplicación utilizando Spring Boot 3.4.x (última versión disponible).
+### Gestión de Tareas
+- Creación de tareas
+- Actualización de tareas
+- Eliminación de tareas
+- Consulta de tareas
+- Asignación de tareas a usuarios
 
-### Base de Datos:
+### Estados de Tareas
+- Estados predefinidos: Nueva, Pendiente, En Progreso, Completada
+- Posibilidad de crear nuevos estados
+- Gestión de estados de tareas
 
-- Utiliza una base de datos H2.
-- Crea tres tablas: usuarios, tareas y estados_tarea.
-- La tabla usuarios debe contener datos pre cargados.
-- La tabla estados_tarea debe contener estados pre cargados.
+## Tecnologías Utilizadas
+- Spring Boot 3.2.5
+- Spring Security
+- JWT (JSON Web Tokens)
+- H2 Database
+- Gradle
+- Java 17
+- Spring Data JPA
+- Springdoc OpenAPI (Swagger)
 
-### JPA:
-- Implementa una capa de persistencia utilizando JPA para almacenar y recuperar las tareas.
+## Requisitos Previos
+- Java 17
+- Gradle
+- Maven
 
-### JWT (JSON Web Token):
+## Configuración
 
-- Implementa la autenticación utilizando JWT para validar usuarios.
+### Variables de Entorno
+La aplicación utiliza las siguientes configuraciones por defecto:
+- Puerto: 8080
+- Base de datos: H2 (en memoria)
+- Regex de contraseña: `^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,}$`
 
-### OpenAPI y Swagger:
+### Usuarios Iniciales
+La aplicación crea automáticamente dos usuarios de prueba:
+1. Juan Perez (juan.perez@example.com)
+2. Maria Perez (maria.perez@example.com)
 
-- Documenta la API utilizando OpenAPI y Swagger.
+## Documentación de la API
 
-## Funcionalidades:
-### Autenticación:
-- Implementa un endpoint para la autenticación de usuarios utilizando JWT. 
+### Autenticación
+Todos los endpoints (excepto login y registro) requieren autenticación mediante JWT.
+El token debe incluirse en el header de la siguiente forma:
+```
+Authorization: Bearer <token>
+```
 
-### CRUD de Tareas:
-- Implementa operaciones CRUD (Crear, Leer, Actualizar, Eliminar) para las tareas.
+### Endpoints Principales
 
-## Consideraciones:
-### Seguridad:
-- Asegúrate de que las operaciones CRUD de tareas solo sean accesibles para usuarios autenticados.
+#### Autenticación
+- **Registro (Sign-up)**
+  ```
+  POST /api/auth/signup
+  ```
+  ```json
+  {
+    "nombre": "Nombre Usuario",
+    "email": "usuario@example.com",
+    "password": "Password123"
+  }
+  ```
 
-### Documentación:
-- Utiliza OpenAPI y Swagger para documentar claramente la API.
-- Puntos adicionales si se genera el API mediante metodologia API First. Generar el archivo openapi.yml Nota: Ejemplo Plugin Maven groupId org.openapitools, artifactId openapi-generator-maven-plugin
+- **Login**
+  ```
+  POST /api/auth/login
+  ```
+  ```json
+  {
+    "email": "usuario@example.com",
+    "password": "Password123"
+  }
+  ```
 
-### Código Limpio:
-- Escribe código ordenado, aplicando buenas prácticas y principios SOLID.
+#### Tareas
+- **Crear Tarea**
+  ```
+  POST /api/tareas
+  ```
+  ```json
+  {
+    "titulo": "Título de la tarea",
+    "descripcion": "Descripción de la tarea",
+    "userId": 1
+  }
+  ```
 
-### Creatividad
-- Se espera dada la descripción del problema se creen las entidades y metodos en consecuencia a lo solicitado.
+- **Obtener Tareas**
+  ```
+  GET /api/tareas
+  GET /api/tareas/{id}
+  ```
 
-## Entregables:
-### Repositorio de GitHub:
-- Realiza un Pull request a este repositorio indicando tu nombre, correo y cargo al que postulas.
-- Todos los PR serán rechazados, no es un indicador de la prueba.
+- **Actualizar Tarea**
+  ```
+  PUT /api/tareas/{id}
+  ```
 
-### Documentación:
-- Incluye instrucciones claras sobre cómo ejecutar y probar la aplicación.
-- **Incluir Json de prueba en un archivo texto o mediante un proyecto postman** Nota: Si no va se restaran puntos de la evaluación
+- **Eliminar Tarea**
+  ```
+  DELETE /api/tareas/{id}
+  ```
 
-## Evaluación:
-Se evaluará la solución en función de los siguientes criterios:
+#### Estados
+- **Obtener Estados**
+  ```
+  GET /api/estados
+  ```
 
-- Correcta implementación de las funcionalidades solicitadas.
-- Aplicación de buenas prácticas de desarrollo, patrones de diseño y principios SOLID.
-- Uso adecuado de Java 17, Spring Boot 3.4.x, H2, JWT, OpenAPI y Swagger.
-- Claridad y completitud de la documentación.
-- **Puntos extras si la generación de la API se realizo mediante API First**
+- **Crear Estado**
+  ```
+  POST /api/estados
+  ```
+  ```json
+  {
+    "estado": "Nuevo Estado"
+  }
+  ```
+
+## Documentación Swagger
+La documentación completa de la API está disponible en:
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+## Ejecución
+1. Clonar el repositorio
+2. Ejecutar `./gradlew bootRun`
+3. La aplicación estará disponible en `http://localhost:8080`
+
+## Contribución
+1. Fork el proyecto
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request

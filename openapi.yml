@@ -1,0 +1,229 @@
+openapi: 3.0.0
+info:
+  title: API de Gestión de Usuarios y Tareas
+  description: API para gestionar usuarios y tareas
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+  /usuarios:
+    get:
+      summary: Obtener todos los usuarios
+      operationId: getAllUsuarios
+      tags:
+        - Usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+    post:
+      summary: Crear un nuevo usuario
+      operationId: createUsuario
+      tags:
+        - Usuarios
+      requestBody:
+        description: Datos del nuevo usuario
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+  /usuarios/{id}:
+    get:
+      summary: Obtener usuario por ID
+      operationId: getUsuarioById
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario no encontrado
+    put:
+      summary: Actualizar usuario
+      operationId: updateUsuario
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Datos del usuario actualizados
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+    delete:
+      summary: Eliminar usuario
+      operationId: deleteUsuario
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Usuario eliminado
+
+  /tareas:
+    get:
+      summary: Obtener todas las tareas
+      operationId: getAllTareas
+      tags:
+        - Tareas
+      responses:
+        '200':
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tarea'
+    post:
+      summary: Crear una nueva tarea
+      operationId: createTarea
+      tags:
+        - Tareas
+      requestBody:
+        description: Datos de la nueva tarea
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tarea'
+      responses:
+        '201':
+          description: Tarea creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarea'
+  /tareas/{id}:
+    get:
+      summary: Obtener tarea por ID
+      operationId: getTareaById
+      tags:
+        - Tareas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tarea encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarea'
+        '404':
+          description: Tarea no encontrada
+    put:
+      summary: Actualizar tarea
+      operationId: updateTarea
+      tags:
+        - Tareas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Datos de la tarea actualizados
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tarea'
+      responses:
+        '200':
+          description: Tarea actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarea'
+    delete:
+      summary: Eliminar tarea
+      operationId: deleteTarea
+      tags:
+        - Tareas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Tarea eliminada
+
+components:
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        email:
+          type: string
+    Tarea:
+      type: object
+      properties:
+        id:
+          type: integer
+        descripcion:
+          type: string
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+        estado:
+          $ref: '#/components/schemas/EstadoTarea'
+    EstadoTarea:
+      type: object
+      properties:
+        id:
+          type: integer
+        estado:
+          type: string
