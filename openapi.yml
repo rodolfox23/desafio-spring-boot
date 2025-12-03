@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: API de Gestión de Usuarios y Tareas
-  description: API para gestionar usuarios y tareas
+  title: API de Gestión de Usuarios y Tareas - Banco BCI
+  description: API para gestionar usuarios y tareas - Banco BCI
   version: 1.0.0
 
 servers:

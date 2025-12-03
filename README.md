@@ -1,4 +1,6 @@
-# API de Gestión de Tareas - Previred
+# bci-desafio-java
+
+# API de Gestión de Tareas - Banco BCI
 
 API REST para la gestión de usuarios y tareas, desarrollada con Spring Boot.
 
@@ -45,6 +47,9 @@ La aplicación utiliza las siguientes configuraciones por defecto:
 - Base de datos: H2 (en memoria)
 - Regex de contraseña: `^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,}$`
 
+### Script de Base de Datos
+El script de creación de la base de datos se encuentra en `src/main/resources/schema.sql`. Este script contiene las definiciones de todas las tablas (usuario, phone, token, estado_tarea, tarea). Con H2 en memoria, el script se ejecuta automáticamente al iniciar la aplicación. Si necesitas usar otra base de datos, puedes ejecutar este script manualmente.
+
 ### Usuarios Iniciales
 La aplicación crea automáticamente dos usuarios de prueba:
 1. Juan Perez (juan.perez@example.com)
@@ -64,25 +69,50 @@ Authorization: Bearer <token>
 #### Autenticación
 - **Registro (Sign-up)**
   ```
-  POST /api/auth/signup
+  POST /auth/sign-up
   ```
   ```json
   {
-    "nombre": "Nombre Usuario",
-    "email": "usuario@example.com",
-    "password": "Password123"
+    "nombre": "Juan Rodriguez",
+    "email": "juan@rodriguez.org",
+    "password": "Password123",
+    "phones": [
+      {
+        "number": "1234567",
+        "citycode": "1",
+        "contrycode": "57"
+      }
+    ]
   }
   ```
 
 - **Login**
   ```
-  POST /api/auth/login
+  POST /auth/login
   ```
   ```json
   {
     "email": "usuario@example.com",
     "password": "Password123"
   }
+  ```
+
+#### Usuarios
+- **Obtener Usuarios**
+  ```
+  GET /api/usuarios
+  GET /api/usuarios/{id}
+  ```
+
+- **Actualizar Usuario**
+  ```
+  PUT /api/usuarios/{id}
+  PATCH /api/usuarios/{id}
+  ```
+
+- **Eliminar Usuario**
+  ```
+  DELETE /api/usuarios/{id}
   ```
 
 #### Tareas
@@ -118,6 +148,7 @@ Authorization: Bearer <token>
 - **Obtener Estados**
   ```
   GET /api/estados
+  GET /api/estados/{id}
   ```
 
 - **Crear Estado**
@@ -128,6 +159,16 @@ Authorization: Bearer <token>
   {
     "estado": "Nuevo Estado"
   }
+  ```
+
+- **Actualizar Estado**
+  ```
+  PUT /api/estados/{id}
+  ```
+
+- **Eliminar Estado**
+  ```
+  DELETE /api/estados/{id}
   ```
 
 ## Documentación Swagger
@@ -141,9 +182,51 @@ http://localhost:8080/swagger-ui/index.html
 2. Ejecutar `./gradlew bootRun`
 3. La aplicación estará disponible en `http://localhost:8080`
 
-## Contribución
-1. Fork el proyecto
-2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir un Pull Request
+## Cómo Probar
+
+### Usando los Usuarios Iniciales
+La aplicación crea automáticamente dos usuarios que puedes usar para probar:
+- Email: `juan.perez@example.com` / Password: `Password123`
+- Email: `maria.perez@example.com` / Password: `Password123`
+
+### Ejemplo de Flujo
+1. **Login con usuario existente:**
+   ```
+   POST http://localhost:8080/auth/login
+   ```
+   ```json
+   {
+     "email": "juan.perez@example.com",
+     "password": "Password123"
+   }
+   ```
+   La respuesta incluirá un `token` que debes usar en los siguientes requests.
+
+2. **Obtener usuarios (requiere token):**
+   ```
+   GET http://localhost:8080/api/usuarios
+   Headers: Authorization: Bearer <token>
+   ```
+
+3. **Crear un nuevo usuario:**
+   ```
+   POST http://localhost:8080/auth/sign-up
+   ```
+   ```json
+   {
+     "nombre": "Test User",
+     "email": "test@example.com",
+     "password": "Password123",
+     "phones": [
+       {
+         "number": "1234567",
+         "citycode": "1",
+         "contrycode": "57"
+       }
+     ]
+   }
+   ```
+
+### Otras Formas de Probar
+- **Swagger UI:** Accede a `http://localhost:8080/swagger-ui/index.html` para probar los endpoints desde el navegador
+- **Postman:** Importa la colección `desafio_bci.postman_collection.json` incluida en el proyecto
